@@ -1,5 +1,5 @@
 {
 	"prefix": "-",
-	"token": "INSERT-TOKEN-HERE",
-	"dbURL": "INSERT-DB-URL-HERE" 
+	"token": "Nzg2ODQzMjQ4MzU3OTMzMDY2.X9MS4Q.aIvqPtqgEJoJpmYEasoJyXxZYkg",
+	"dbURL": "mongodb+srv://admin:123@cluster0.gm464.mongodb.net/bestobuy?retryWrites=true&w=majority" 
 }
