@@ -18,7 +18,7 @@ for (const file of commandFiles) {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  setInterval(() => scanForDiscounts(client), /*5 * 60 * 1000*/ 30000); // Scan every 5 min
+  setInterval(() => scanForDiscounts(client), 5 * 60 * 1000); // Scan every 5 min
 });
 
 client.on('message', msg => {
@@ -37,10 +37,7 @@ client.on('message', msg => {
 });
 
 mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() =>  {
-      mongoose.connection.db.dropDatabase();
-      console.log('Successfully connected to DB')
-  })
+  .then(() => console.log('Successfully connected to DB'))
   .catch((err) => console.log('Failed to connect with error: ', err.message));
 
 client.login(token);
