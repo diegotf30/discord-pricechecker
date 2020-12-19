@@ -3,7 +3,8 @@ const request = require('request');
 const User = require('../models/user');
 const Watch = require('../models/watch');
 const Product = require('../models/product');
-const { getBasePrice, getProductName } = require('../site_parser');
+const Notification = require('../models/notification');
+const { getBasePrice, getCurrentPrice, getProductName } = require('../site_parser');
 
 function parseNumber(num_str) {
     return parseFloat(num_str.replace(/,/g, ""));
@@ -44,7 +45,7 @@ module.exports = {
                                         name: prodName,
                                         url: prodURL,
                                         basePrice: getBasePrice(body),
-                                        latestPrice: 999999,
+                                        latestPrice: getCurrentPrice(body),
                                     });
                                 }
                                 prod.save().then(prod => {
@@ -58,10 +59,18 @@ module.exports = {
                                             }
                                             watch.desiredPrice = price;
                                             watch.save().then(() => {
-                                                let response = `Ya quedów browski te andaré wachando "${prod.name}" :sunglasses::ok_hand:`;
-                                                if (price !== null)
-                                                    response += `\nSi el producto llega a bajar de $${price.toLocaleString()} te aviso brow`;
-                                                msg.channel.send(response);
+                                                let notif = new Notification({
+                                                    user: user._id,
+                                                    product: prod._id,
+                                                    price: getCurrentPrice(body),
+                                                });
+                                                notif.save().then(() => {
+                                                    let response = `Ya quedów browski te andaré wachando "${prod.name}" :sunglasses::ok_hand:`;
+                                                    if (price !== null)
+                                                        response += `\nSi el producto llega a bajar de $${price.toLocaleString()} te aviso brow`;
+                                                    msg.channel.send(response);
+                                                })
+                                                .catch(logError);
                                             })
                                             .catch(logError);
                                         })
