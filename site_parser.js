@@ -82,14 +82,15 @@ module.exports = {
                             })
                             .catch(logError);
                         }
+
+                        if (currPrice < prod.latestPrice) {
+                            prod.latestPrice = currPrice;
+                            prod.save();
+                        }
                     })
                     .catch(logError);
-
-                    if (currPrice < prod.latestPrice)
-                        prod.latestPrice = currPrice;
                 });
             }
-            products.save().catch(logError);
         })
         .catch(logError);
     },
