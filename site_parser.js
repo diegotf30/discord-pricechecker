@@ -36,7 +36,6 @@ module.exports = {
         console.log('scanning for discounts...')
         Product.find({}).then(products => {
             for (var prod of products) {
-                console.log('Checking on prod')
                 request(prod.url, (err, res, body) => {
                     if (err) return console.error(err);
                     if (checkSoldOut(body)) return;

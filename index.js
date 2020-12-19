@@ -37,11 +37,7 @@ client.on('message', msg => {
 });
 
 mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    mongoose.connection.db.dropDatabase();
-    console.log('Successfully connected to DB')
-
-    })
+  .then(() => console.log('Successfully connected to DB'))
   .catch((err) => console.log('Failed to connect with error: ', err.message));
 
 client.login(token);
