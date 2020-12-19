@@ -44,6 +44,7 @@ module.exports = {
                                         name: prodName,
                                         url: prodURL,
                                         basePrice: getBasePrice(body),
+                                        latestPrice: 999999,
                                     });
                                 }
                                 prod.save().then(prod => {

@@ -35,21 +35,25 @@ module.exports = {
     scanForDiscounts(client) {
         console.log('scanning for discounts...')
         Product.find({}).then(products => {
-            for (const prod of products) {
+            for (var prod of products) {
                 request(prod.url, (err, res, body) => {
                     if (err) return console.error(err);
                     if (checkSoldOut(body)) return;
 
                     let currPrice = getCurrentPrice(body);
-                    console.log(`  Found discount for ${prod.name}, $${currPrice}`);
+                    if (currPrice < prod.latestPrice)
+                        console.log(`\tFound discount for ${prod.name}, $${currPrice}`);
 
                     let greeting = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
                     let alertMsg = `${greeting} "${prod.name}" is on sale -> $${currPrice}!`;
-                    // Privately alert all users that the product is on sale
+                    // Privately notify all users that the product is on sale
                     Watch.find({ product: prod.id }).then(watches => {
                         for (const watch of watches) {
-                            // Only alert if prod is under treshold
-                            if (watch.desiredPrice !== null && currPrice > watch.desiredPrice) continue;
+                            // Skip unless price has dropped (when no desired price provided)
+                            if (watch.desiredPrice === null && currPrice >= prod.latestPrice)
+                                continue;
+                            else if (watch.desiredPrice !== null && currPrice > watch.desiredPrice)
+                                continue;
 
                             // Check if we already notified user
                             Notification.findOne({ user: watch.user, product: prod.id, price: currPrice }).then(notif => {
@@ -62,6 +66,7 @@ module.exports = {
                                 });
                                 notif.save().then(() => {
                                     User.findById(watch.user).then(user => {
+                                        console.log(`\tNotified ${user.name} of ${prod.name} ($${currPrice})`);
                                         client.users.fetch(user.discordId).then(discordUser => {
                                             discordUser.send(alertMsg);
                                             if (watch.desiredPrice != null) {
@@ -79,8 +84,12 @@ module.exports = {
                         }
                     })
                     .catch(logError);
+
+                    if (currPrice < prod.latestPrice)
+                        prod.latestPrice = currPrice;
                 });
             }
+            products.save().catch(logError);
         })
         .catch(logError);
     },
