@@ -83,10 +83,8 @@ module.exports = {
                             .catch(logError);
                         }
 
-                        if (currPrice < prod.latestPrice) {
-                            prod.latestPrice = currPrice;
-                            prod.save();
-                        }
+                        prod.latestPrice = currPrice;
+                        prod.save();
                     })
                     .catch(logError);
                 });
