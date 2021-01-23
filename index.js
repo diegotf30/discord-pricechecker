@@ -18,7 +18,7 @@ for (const file of commandFiles) {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  setInterval(() => scanForDiscounts(client), 5 * 60 * 1000); // Scan every 5 min
+  setInterval(() => scanForDiscounts(client), 1 * 5 * 1000); // Scan every 5 min
 });
 
 client.on('message', msg => {
