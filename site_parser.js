@@ -1,40 +1,29 @@
 const request = require('request-promise');
 const Discord = require('discord.js');
-const JSSoup = require('jssoup').default;
 
 const User = require('./models/user');
 const Watch = require('./models/watch');
 const Product = require('./models/product');
 const Notification = require('./models/notification');
+const BestBuy = require('./parsers/bestbuy');
+const Nike = require('./parsers/nike');
+const { logError } = require('../util');
 
-const GREETINGS = ['bro :flushed:...', 'Hey!', 'Heyo,', 'Karnal,', 'Hey, listen!', 'Waddup,', 'Heyo!']
+const GREETINGS = ['bro :flushed:...', 'Hey!', 'Heyo,', 'Karnal,', 'Hey, listen!', 'Waddup,', 'Heyo!', 'ey', 'e', 'ewe', 'e we']
 
-function getDivText(body, opts) {
-    var soup = new JSSoup(body);
-    var elem = soup.find('div', opts);
-    return elem ? elem.getText(' ') : '';
-}
-
-function parsePrice(num_str) {
-    return parseFloat(num_str.replace(/,/g, "").replace(/\$/g, ""));
-}
-
-function logError(err) {
-    return console.error(err);
-}
-
-function getCurrentPrice(body) {
-    return parsePrice(getDivText(body, {class: 'product-price'}));;
-}
-
-function checkSoldOut(body) {
-    return getDivText(body, {class: 'shop-add-to-cart'}) == 'Agotado';
+function getSiteParser(url, body) {
+    if (url.indexOf("bestbuy.com/") !== -1)
+        return BestBuy(body);
+    else if (url.indexOf("nike.com/") !== -1)
+        return Nike(body);
 }
 
 function notifyUsers(prod, body) {
-    if (checkSoldOut(body)) return;
+    const site = getSiteParser(prod.url, body);
 
-    let currPrice = getCurrentPrice(body);
+    if (site.soldOut()) return;
+
+    let currPrice = site.getCurrentPrice();
     if (currPrice < prod.latestPrice)
         console.log(`\tFound discount for ${prod.name}, $${currPrice}`);
 
@@ -64,7 +53,7 @@ function notifyUsers(prod, body) {
                         client.users.fetch(user.discordId).then(discordUser => {
                             discordUser.send(alertMsg);
                             if (watch.desiredPrice != null) {
-                                let percentage = (1 - currPrice/watch.desiredPrice) * 100;
+                                let percentage = (1 - currPrice / watch.desiredPrice) * 100;
                                 discordUser.send(`${percentage.toFixed(2)}% lower than your desired price ($${watch.desiredPrice})`);
                             }
                         })
@@ -98,14 +87,5 @@ module.exports = {
             }
         })
         .catch(logError);
-    },
-    getProductName(body) {
-        return getDivText(body, {id: 'sku-title'});
-    },
-    getBasePrice(body) {
-        let basePriceStr = getDivText(body, {class: 'product-regprice'});
-        return parsePrice(basePriceStr.split(/\s+/)[1]);
-    },
-    getCurrentPrice,
-    checkSoldOut
+    }
 }

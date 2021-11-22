@@ -4,28 +4,30 @@ const User = require('../models/user');
 const Watch = require('../models/watch');
 const Product = require('../models/product');
 const Notification = require('../models/notification');
-const { getBasePrice, getCurrentPrice, getProductName } = require('../site_parser');
-
-function parseNumber(num_str) {
-    return parseFloat(num_str.replace(/,/g, ""));
-}
-
-function logError(err) {
-    return console.error(err);
-}
+const { getSiteParser } = require('../site_parser');
+const { parseNumber, logError } = require('../util');
 
 module.exports = {
 	name: 'watch',
     description: 'pa wachar el precio de un productillow',
     // Args must have a URL for the desired product to be watched, and can have a desired discount price 
 	execute(msg, args) {
-        const prodURL = args[0];
-        let price = null;
-        if (args.length > 1) {
-            price = parseNumber(args[1]);
+        if (args.length > 2) {
+            return console.error(`"${msg} ${args}" has more than 2 args`);
         }
 
-        request(prodURL, (err, res, body) => {
+        let prodURL = args[0];
+        let price = null;
+        if (args.length > 1) {
+            if (parseNumber(args[0]) === NaN) {  // User used command with format .watch $URL $price 
+                price = parseNumber(args[1]);
+            } else {  // User used command with format .watch $price $URL
+                prodURL = args[1];
+                price = parseNumber(args[0]);
+            }
+        }
+
+        request(prodURL, (err, _, body) => {
             if (err) return console.error(err);
 
             User.findOne({ discordId: msg.author.id})
@@ -37,15 +39,16 @@ module.exports = {
                         });
                     }
                     user.save().then(user => {
-                        const prodName = getProductName(body);
+                        const site = getSiteParser(prodURL, body);
+                        const prodName = site.getProductName();
                         Product.findOne({ name: prodName })
                             .then(prod => {
                                 if (prod === null) {
                                     prod = new Product({
                                         name: prodName,
                                         url: prodURL,
-                                        basePrice: getBasePrice(body),
-                                        latestPrice: getCurrentPrice(body),
+                                        basePrice: site.getBasePrice(),
+                                        latestPrice: site.getCurrentPrice(),
                                     });
                                 }
                                 prod.save().then(prod => {
@@ -62,7 +65,7 @@ module.exports = {
                                                 let notif = new Notification({
                                                     user: user._id,
                                                     product: prod._id,
-                                                    price: getCurrentPrice(body),
+                                                    price: site.getCurrentPrice(),
                                                 });
                                                 notif.save().then(() => {
                                                     let response = `Ya quedów browski te andaré wachando "${prod.name}" :sunglasses::ok_hand:`;
