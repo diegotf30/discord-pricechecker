@@ -1,5 +1,5 @@
 {
 	"prefix": "-",
-	"token": "Nzg2ODQzMjQ4MzU3OTMzMDY2.X9MS4Q.aIvqPtqgEJoJpmYEasoJyXxZYkg",
-	"dbURL": "mongodb+srv://admin:123@cluster0.gm464.mongodb.net/bestobot?retryWrites=true&w=majority" 
+	"token": "DISCORD-TOKEN-HERE",
+	"dbURL": "MONGO-DB-URL-HERE" 
 }
