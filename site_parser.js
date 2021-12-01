@@ -4,8 +4,11 @@ const User = require('./models/user');
 const Watch = require('./models/watch');
 const Product = require('./models/product');
 const Notification = require('./models/notification');
+
 const BestBuy = require('./parsers/bestbuy');
 const Heb = require('./parsers/heb');
+const Walmart = require('./parsers/walmart');
+
 const { logError, GREETINGS, HEADERS } = require('./util');
 
 
@@ -14,6 +17,8 @@ function getSiteParser(url, body) {
         return new BestBuy(body);
     else if (url.indexOf("heb.com.mx/") !== -1)
         return new Heb(body);
+    else if (url.indexOf("walmart.com/") !== -1)
+        return new Walmart(body);
 }
 
 function notifyUsers(prod, body) {

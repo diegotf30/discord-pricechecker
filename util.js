@@ -15,6 +15,10 @@ function getButtonText(body, opts) {
     return getTagText(body, 'button', opts);
 }
 
+function getSpanText(body, opts) {
+    return getTagText(body, 'span', opts);
+}
+
 function getH1Text(body, opts) {
     return getTagText(body, 'h1', opts);
 }
@@ -27,6 +31,15 @@ function getTagText(body, tag, opts) {
     var soup = new JSSoup(body);
     var elem = soup.find(tag, opts);
     return elem ? elem.getText(' ') : '';
+}
+
+function findTextInSpan(body, text, opts = {}) {
+    return findTextInTag(body, 'span', opts, text);
+}
+
+function findTextInTag(body, tag, opts, text) {
+    var soup = new JSSoup(body);
+    return soup.find(tag, opts, text) !== undefined;
 }
 
 function parsePrice(num_str) {
@@ -45,8 +58,10 @@ function logError(err) {
 module.exports = {
     getDivText,
     getButtonText,
+    getSpanText,
     getH1Text,
     getH2Text,
+    findTextInSpan,
     parsePrice,
     parseNumber,
     logError,
