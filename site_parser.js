@@ -7,15 +7,20 @@ const Product = require('./models/product');
 const Notification = require('./models/notification');
 const BestBuy = require('./parsers/bestbuy');
 const Nike = require('./parsers/nike');
-const { logError } = require('../util');
+const { logError } = require('./util');
 
 const GREETINGS = ['bro :flushed:...', 'Hey!', 'Heyo,', 'Karnal,', 'Hey, listen!', 'Waddup,', 'Heyo!', 'ey', 'e', 'ewe', 'e we']
+const HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    'accept-encoding': 'gzip, deflate, br',
+};
 
 function getSiteParser(url, body) {
     if (url.indexOf("bestbuy.com/") !== -1)
-        return BestBuy(body);
+        return new BestBuy(body);
     else if (url.indexOf("nike.com/") !== -1)
-        return Nike(body);
+        return new Nike(body);
 }
 
 function notifyUsers(prod, body) {
@@ -81,11 +86,12 @@ module.exports = {
         console.log('scanning for discounts...')
         Product.find({}).then(async function(products) {
             for (var prod of products) {
-                await request(prod.url)
+                await request({ uri: prod.url, headers: HEADERS })
                 .then(body => notifyUsers(prod, body))
                 .catch(logError);
             }
         })
         .catch(logError);
-    }
+    },
+    getSiteParser
 }

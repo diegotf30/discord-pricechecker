@@ -1,8 +1,16 @@
 const JSSoup = require('jssoup').default;
 
 function getDivText(body, opts) {
+    return getTagText(body, 'div', opts);
+}
+
+function getButtonText(body, opts) {
+    return getTagText(body, 'button', opts);
+}
+
+function getTagText(body, tag, opts) {
     var soup = new JSSoup(body);
-    var elem = soup.find('div', opts);
+    var elem = soup.find(tag, opts);
     return elem ? elem.getText(' ') : '';
 }
 
@@ -21,6 +29,7 @@ function logError(err) {
 
 module.exports = {
     getDivText,
+    getButtonText,
     parsePrice,
     parseNumber,
     logError

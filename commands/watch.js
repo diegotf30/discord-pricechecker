@@ -1,4 +1,4 @@
-const request = require('request');
+const request = require('request-promise');
 
 const User = require('../models/user');
 const Watch = require('../models/watch');
@@ -6,6 +6,11 @@ const Product = require('../models/product');
 const Notification = require('../models/notification');
 const { getSiteParser } = require('../site_parser');
 const { parseNumber, logError } = require('../util');
+
+const HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+};
 
 module.exports = {
 	name: 'watch',
@@ -19,17 +24,15 @@ module.exports = {
         let prodURL = args[0];
         let price = null;
         if (args.length > 1) {
-            if (parseNumber(args[0]) === NaN) {  // User used command with format .watch $URL $price 
+            if (isNaN(parseNumber(args[0]))) {  // User used command with format .watch $URL $price 
                 price = parseNumber(args[1]);
             } else {  // User used command with format .watch $price $URL
                 prodURL = args[1];
                 price = parseNumber(args[0]);
             }
         }
-
-        request(prodURL, (err, _, body) => {
-            if (err) return console.error(err);
-
+        request({ uri: prodURL, headers: HEADERS })
+        .then(body => {
             User.findOne({ discordId: msg.author.id})
                 .then(user => {
                     if (!user) {
@@ -86,6 +89,7 @@ module.exports = {
                     .catch(logError);
                 })
                 .catch(logError);
-        });
+        })
+        .catch(logError);
 	},
 };
