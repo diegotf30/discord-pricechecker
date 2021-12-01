@@ -5,18 +5,14 @@ const Watch = require('../models/watch');
 const Product = require('../models/product');
 const Notification = require('../models/notification');
 const { getSiteParser } = require('../site_parser');
-const { parseNumber, logError } = require('../util');
-
-const HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36',
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-};
+const { parseNumber, logError, HEADERS } = require('../util');
 
 module.exports = {
 	name: 'watch',
     description: 'pa wachar el precio de un productillow',
     // Args must have a URL for the desired product to be watched, and can have a desired discount price 
 	execute(msg, args) {
+        console.log(`received "${msg} ${args}"`)
         if (args.length > 2) {
             return console.error(`"${msg} ${args}" has more than 2 args`);
         }
@@ -33,6 +29,7 @@ module.exports = {
         }
         request({ uri: prodURL, headers: HEADERS })
         .then(body => {
+            console.log('finished request!');
             User.findOne({ discordId: msg.author.id})
                 .then(user => {
                     if (!user) {

@@ -1,11 +1,26 @@
 const JSSoup = require('jssoup').default;
 
+const GREETINGS = ['bro :flushed:...', 'Hey!', 'Heyo,', 'Karnal,', 'Hey, listen!', 'Waddup,', 'Heyo!', 'ey', 'e', 'ewe', 'e we']
+const HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    'accept-encoding': '*',
+};
+
 function getDivText(body, opts) {
     return getTagText(body, 'div', opts);
 }
 
 function getButtonText(body, opts) {
     return getTagText(body, 'button', opts);
+}
+
+function getH1Text(body, opts) {
+    return getTagText(body, 'h1', opts);
+}
+
+function getH2Text(body, opts) {
+    return getTagText(body, 'h2', opts);
 }
 
 function getTagText(body, tag, opts) {
@@ -30,7 +45,11 @@ function logError(err) {
 module.exports = {
     getDivText,
     getButtonText,
+    getH1Text,
+    getH2Text,
     parsePrice,
     parseNumber,
-    logError
+    logError,
+    GREETINGS,
+    HEADERS
 }

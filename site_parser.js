@@ -1,26 +1,19 @@
 const request = require('request-promise');
-const Discord = require('discord.js');
 
 const User = require('./models/user');
 const Watch = require('./models/watch');
 const Product = require('./models/product');
 const Notification = require('./models/notification');
 const BestBuy = require('./parsers/bestbuy');
-const Nike = require('./parsers/nike');
-const { logError } = require('./util');
+const Heb = require('./parsers/heb');
+const { logError, GREETINGS, HEADERS } = require('./util');
 
-const GREETINGS = ['bro :flushed:...', 'Hey!', 'Heyo,', 'Karnal,', 'Hey, listen!', 'Waddup,', 'Heyo!', 'ey', 'e', 'ewe', 'e we']
-const HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36',
-    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'accept-encoding': 'gzip, deflate, br',
-};
 
 function getSiteParser(url, body) {
     if (url.indexOf("bestbuy.com/") !== -1)
         return new BestBuy(body);
-    else if (url.indexOf("nike.com/") !== -1)
-        return new Nike(body);
+    else if (url.indexOf("heb.com.mx/") !== -1)
+        return new Heb(body);
 }
 
 function notifyUsers(prod, body) {
