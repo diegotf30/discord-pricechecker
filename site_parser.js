@@ -6,6 +6,7 @@ const Product = require('./models/product');
 const Notification = require('./models/notification');
 
 const BestBuy = require('./parsers/bestbuy');
+const BestBuyCanada = require('./parsers/bestbuy_canada');
 const Heb = require('./parsers/heb');
 const Walmart = require('./parsers/walmart');
 
@@ -15,6 +16,8 @@ const { logError, GREETINGS, HEADERS } = require('./util');
 function getSiteParser(url, body) {
     if (url.indexOf("bestbuy.com/") !== -1)
         return new BestBuy(body);
+    else if (url.indexOf("bestbuy.ca/") !== -1)
+        return new BestBuyCanada(body);
     else if (url.indexOf("heb.com.mx/") !== -1)
         return new Heb(body);
     else if (url.indexOf("walmart.com/") !== -1)

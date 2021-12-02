@@ -27,6 +27,12 @@ function getH2Text(body, opts) {
     return getTagText(body, 'h2', opts);
 }
 
+function getFirstChildText(body, tag, opts) {
+    var soup = new JSSoup(body);
+    var firstChild = soup.find(tag, opts).descendants[0];
+    return getTagText(body, firstChild.name, firstChild.attrs);
+}
+
 function getTagText(body, tag, opts) {
     var soup = new JSSoup(body);
     var elem = soup.find(tag, opts);
@@ -61,6 +67,7 @@ module.exports = {
     getSpanText,
     getH1Text,
     getH2Text,
+    getFirstChildText,
     findTextInSpan,
     parsePrice,
     parseNumber,
