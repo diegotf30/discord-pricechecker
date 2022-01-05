@@ -12,6 +12,7 @@ const LaCastellana = require('./parsers/la_castellana');
 // Not supported by current implementation.
 // const Sams = require('./parsers/sams');
 const Soriana = require('./parsers/soriana');
+const Vinoteca = require('./parsers/vinoteca');
 const Walmart = require('./parsers/walmart');
 
 const { logError, GREETINGS, HEADERS } = require('./util');
@@ -28,6 +29,8 @@ function getSiteParser(url, body) {
         return new LaCastellana(body);
     else if (url.indexOf("soriana.com/") !== -1)
         return new Soriana(body);
+    else if (url.indexOf("vinoteca.com/") !== -1)
+        return new Vinoteca(body);
     else if (url.indexOf("walmart.com/") !== -1)
         return new Walmart(body);
 }

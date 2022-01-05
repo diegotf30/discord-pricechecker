@@ -39,6 +39,16 @@ function getTagText(body, tag, opts) {
     return elem ? elem.getText(' ') : '';
 }
 
+function getMetaTagContent(body, opts) {
+    return getTagContent(body, 'meta', opts);
+}
+
+function getTagContent(body, tag, opts) {
+    var soup = new JSSoup(body);
+    var elem = soup.find(tag, opts);
+    return elem ? elem.attrs.content : '';
+}
+
 function findTextInSpan(body, text, opts = {}) {
     return findTextInTag(body, 'span', opts, text);
 }
@@ -65,6 +75,7 @@ module.exports = {
     getDivText,
     getButtonText,
     getSpanText,
+    getMetaTagContent,
     getH1Text,
     getH2Text,
     getFirstChildText,
