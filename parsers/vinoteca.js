@@ -14,7 +14,6 @@ class Vinoteca {
     }
 
     getCurrentPrice() {
-        console.log(this.getProductInfo())
         const prod_info = this.getProductInfo();
         return prod_info.SkuSellersInformation[0].Price;
     }
