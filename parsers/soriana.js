@@ -5,10 +5,6 @@ class Soriana {
         this.body = body;
     }
 
-    onSale() {
-        return getDivText(this.body, {'class': ['sales', 'text--red']}) !== '';
-    }
-
     getCurrentPrice() {
         let salePriceStr = getDivText(this.body, {'class': ['sales', 'text--red']});
         return salePriceStr ? parsePrice(salePriceStr) : this.getBasePrice();

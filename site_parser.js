@@ -8,6 +8,9 @@ const Notification = require('./models/notification');
 const BestBuy = require('./parsers/bestbuy');
 const BestBuyCanada = require('./parsers/bestbuy_canada');
 const Heb = require('./parsers/heb');
+const LaCastellana = require('./parsers/la_castellana');
+// Not supported by current implementation.
+// const Sams = require('./parsers/sams');
 const Soriana = require('./parsers/soriana');
 const Walmart = require('./parsers/walmart');
 
@@ -21,6 +24,8 @@ function getSiteParser(url, body) {
         return new BestBuyCanada(body);
     else if (url.indexOf("heb.com.mx/") !== -1)
         return new Heb(body);
+    else if (url.indexOf("lacastellana.com/") !== -1)
+        return new LaCastellana(body);
     else if (url.indexOf("soriana.com/") !== -1)
         return new Soriana(body);
     else if (url.indexOf("walmart.com/") !== -1)
