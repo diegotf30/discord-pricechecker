@@ -29,7 +29,13 @@ module.exports = {
         }
         request({ uri: prodURL, headers: HEADERS })
         .then(body => {
-            console.log('finished request!');
+            console.log('finished request to site.');
+            // Send quick response to discord user.
+            let response = `Ya quedów browski te andaré wachando "${prod.name}" :sunglasses::ok_hand:`;
+            if (price !== null)
+                response += `\nSi el producto llega a bajar de $${price.toLocaleString()} te aviso brow`;
+            msg.channel.send(response);
+
             User.findOne({ discordId: msg.author.id})
                 .then(user => {
                     if (!user) {
@@ -62,18 +68,12 @@ module.exports = {
                                             }
                                             watch.desiredPrice = price;
                                             watch.save().then(() => {
-                                                let notif = new Notification({
+                                                const notif = new Notification({
                                                     user: user._id,
                                                     product: prod._id,
                                                     price: site.getCurrentPrice(),
                                                 });
-                                                notif.save().then(() => {
-                                                    let response = `Ya quedów browski te andaré wachando "${prod.name}" :sunglasses::ok_hand:`;
-                                                    if (price !== null)
-                                                        response += `\nSi el producto llega a bajar de $${price.toLocaleString()} te aviso brow`;
-                                                    msg.channel.send(response);
-                                                })
-                                                .catch(logError);
+                                                notif.save().catch(logError);
                                             })
                                             .catch(logError);
                                         })
