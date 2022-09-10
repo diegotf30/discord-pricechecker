@@ -1,4 +1,4 @@
- const { parsePrice, getDivText, getSpanText } = require('../util');
+ const { parsePrice, getDivText, getH1Text } = require('../util');
 
 class Soriana {
     constructor(body) {
@@ -6,8 +6,8 @@ class Soriana {
     }
 
     getCurrentPrice() {
-        let salePriceStr = getDivText(this.body, {'class': ['sales', 'text--red']});
-        return salePriceStr ? parsePrice(salePriceStr) : this.getBasePrice();
+        let prices = getDivText(this.body, {'class': 'contentPrices'}).trim().split(/(\s+)/);
+        return prices > 1 ? parsePrice(prices[2]) : this.getBasePrice();
     }
 
     soldOut() {
@@ -15,11 +15,12 @@ class Soriana {
     }
 
     getProductName() {
-        return getDivText(this.body, {class: 'product-name'});
+        return getH1Text(this.body, {class: 'product-name'});
     }
 
     getBasePrice() {
-        return parsePrice(getSpanText(this.body, {'class': 'product-price'}));
+        let prices = getDivText(this.body, {'class': 'contentPrices'}).trim().split(/(\s+)/);
+        return parsePrice(prices[0]);
     }
 };
 
