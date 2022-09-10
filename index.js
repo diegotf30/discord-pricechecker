@@ -1,7 +1,7 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
 const Discord = require('discord.js');
-const { prefix, token, dbURL } = require('./config');
+const { ENV, prefix, token, dbURL } = require('./config');
 const { scanForDiscounts } = require('./site_parser');
 
 const client = new Discord.Client();
@@ -36,7 +36,7 @@ client.on('message', msg => {
     }
 });
 
-mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true, dbName: ENV })
   .then(() => console.log('Successfully connected to DB'))
   .catch((err) => console.log('Failed to connect with error: ', err.message));
 
