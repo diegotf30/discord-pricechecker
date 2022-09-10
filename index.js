@@ -1,7 +1,7 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
 const Discord = require('discord.js');
-const { prefix, token, dbURL } = require('./config.json');
+const { prefix, token, dbURL } = require('./config');
 const { scanForDiscounts } = require('./site_parser');
 
 const client = new Discord.Client();
@@ -18,7 +18,7 @@ for (const file of commandFiles) {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  setInterval(() => scanForDiscounts(client), 1 * 5 * 1000); // Scan every 5 min
+  setInterval(() => scanForDiscounts(client), 2 * 60 * 1000); // Scan every 2 min
 });
 
 client.on('message', msg => {

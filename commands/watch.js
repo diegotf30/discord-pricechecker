@@ -14,7 +14,7 @@ module.exports = {
 	execute(msg, args) {
         console.log(`received "${msg} ${args}"`)
         if (args.length > 2) {
-            return console.error(`"${msg} ${args}" has more than 2 args`);
+            return console.error(`"${msg} ${args}" has more than 2 args. Command must have format "watch $URL [$PRICE]"`);
         }
 
         let prodURL = args[0];
