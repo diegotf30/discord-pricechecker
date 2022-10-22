@@ -71,6 +71,12 @@ function logError(err) {
     return console.error(err);
 }
 
+function toTitleCase(str) {
+    return str.split(' ')
+      .map(w => w[0].toUpperCase() + w.substring(1).toLowerCase())
+      .join(' ');
+}
+
 module.exports = {
     getDivText,
     getButtonText,
@@ -82,6 +88,7 @@ module.exports = {
     findTextInSpan,
     parsePrice,
     parseNumber,
+    toTitleCase,
     logError,
     GREETINGS,
     HEADERS

@@ -5,6 +5,7 @@ const Watch = require('./models/watch');
 const Product = require('./models/product');
 const Notification = require('./models/notification');
 
+const Bershka = require('./parsers/bershka');
 const BestBuy = require('./parsers/bestbuy');
 const BestBuyCanada = require('./parsers/bestbuy_canada');
 const Heb = require('./parsers/heb');
@@ -14,12 +15,15 @@ const LaCastellana = require('./parsers/la_castellana');
 const Soriana = require('./parsers/soriana');
 const Vinoteca = require('./parsers/vinoteca');
 const Walmart = require('./parsers/walmart');
+const Zara = require('./parsers/zara');
 
 const { logError, GREETINGS, HEADERS } = require('./util');
 
 
 function getSiteParser(url, body) {
-    if (url.indexOf("bestbuy.com/") !== -1)
+    if (url.indexOf("bershka.com/") !== -1)
+        return new Bershka(body);
+    else if (url.indexOf("bestbuy.com/") !== -1)
         return new BestBuy(body);
     else if (url.indexOf("bestbuy.ca/") !== -1)
         return new BestBuyCanada(body);
@@ -33,6 +37,8 @@ function getSiteParser(url, body) {
         return new Vinoteca(body);
     else if (url.indexOf("walmart.com/") !== -1)
         return new Walmart(body);
+    else if (url.indexOf("zara.com/") !== -1)
+        return new Zara(body);
 }
 
 function notifyUsers(prod, body) {
