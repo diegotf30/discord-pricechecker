@@ -12,7 +12,6 @@ module.exports = {
     description: 'pa wachar el precio de un productillow',
     // Args must have a URL for the desired product to be watched, and can have a desired discount price 
 	execute(msg, args) {
-        console.log(`received "${msg} ${args}"`)
         if (args.length > 2) {
             return console.error(`"${msg} ${args}" has more than 2 args. Command must have format "watch $URL [$PRICE]"`);
         }
@@ -31,7 +30,8 @@ module.exports = {
         .then(body => {
             console.log('finished request to site.');
             // Send quick response to discord user.
-            let response = `Ya quedów browski te andaré wachando "${prod.name}" :sunglasses::ok_hand:`;
+            const site = getSiteParser(prodURL, body);
+            let response = `Ya quedów browski te andaré wachando "${site.getProductName()}" :sunglasses::ok_hand:`;
             if (price !== null)
                 response += `\nSi el producto llega a bajar de $${price.toLocaleString()} te aviso brow`;
             msg.channel.send(response);
@@ -45,7 +45,6 @@ module.exports = {
                         });
                     }
                     user.save().then(user => {
-                        const site = getSiteParser(prodURL, body);
                         const prodName = site.getProductName();
                         Product.findOne({ name: prodName })
                             .then(prod => {

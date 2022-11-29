@@ -26,6 +26,7 @@ client.on('message', msg => {
 
     const args = msg.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
+    console.log(`received "${msg} ${args}"`);
 
     if (!client.commands.has(command)) return;
     try {
