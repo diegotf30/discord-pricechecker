@@ -1,4 +1,4 @@
-const { parsePrice, getSpanText, getH1Text } = require('../util');
+const { parsePrice, getSpanText, getH1Text, findTextInSpan } = require('../util');
 
 // Removes "MXN&nbsp;" from price string and returns it in Number type
 function extractPriceNumber(priceStr) {
@@ -14,8 +14,8 @@ class Bershka {
         return extractPriceNumber(getSpanText(this.body, {class: 'current-price-elem'}));
     }
 
-    soldOut() { 
-        return false // TODO: Change when finding SOLD OUT product
+    soldOut() {
+        return false; // Unable to extract with current implementation (updated with js on client-side).
     }
 
     getProductName() {

@@ -13,7 +13,8 @@
     "sync-request": "^6.1.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "node tests/main.js"
   },
   "author": "",
   "license": "ISC",
